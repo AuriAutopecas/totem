@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Totem de Atendimento</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+  <div class="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md text-center">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">Bem-vindo ao Atendimento</h1>
+    <p class="text-gray-600 mb-4">Selecione o serviço desejado:</p>
+
+    <div class="grid grid-cols-1 gap-4 mb-6">
+      <button onclick="gerarFicha('Atendimento Geral')" class="bg-blue-600 text-white py-3 rounded-xl hover:bg-blue-700">Atendimento Geral</button>
+      <button onclick="gerarFicha('Caixa')" class="bg-green-600 text-white py-3 rounded-xl hover:bg-green-700">Caixa</button>
+      <button onclick="gerarFicha('Informacoes')" class="bg-yellow-500 text-white py-3 rounded-xl hover:bg-yellow-600">Informações</button>
+      <button onclick="gerarFicha('Retirada de Documentos')" class="bg-purple-600 text-white py-3 rounded-xl hover:bg-purple-700">Retirada de Documentos</button>
+    </div>
+
+    <div id="mensagem" class="text-sm text-gray-700 mt-4"></div>
+  </div>
+
+  <script>
+    // NOVA URL DO SEU GOOGLE APPS SCRIPT
+    const APPS_SCRIPT_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxCsGleqowkaREJtGvOAc7HuygJK5FaHeuELvOeOmXob3Ip2op0Xs8rdJ2huN-Hspcq/exec';
+
+    function gerarFicha(servico) {
+      const mensagemEl = document.getElementById("mensagem");
+      mensagemEl.textContent = "Gerando ficha, aguarde...";
+
+      fetch(APPS_SCRIPT_WEB_APP_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          action: "generateTicket",
+          service: servico
+        })
+      })
+      .then(res => {
+        if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
+      .then(data => {
+        if (data.ticketId) {
+          mensagemEl.innerHTML = `<span class="text-green-600 font-semibold">Ficha gerada: <strong>${data.ticketId}</strong></span>`;
+        } else {
+          mensagemEl.innerHTML = `<span class="text-red-600 font-semibold">Erro: ${data.error || "Tente novamente. Resposta inválida do servidor."}</span>`;
+        }
+      })
+      .catch(err => {
+        console.error("Erro na requisição fetch:", err);
+        mensagemEl.innerHTML = `<span class="text-red-600 font-semibold">Erro na requisição: ${err.message || "Verifique o console para mais detalhes."}</span>`;
+      });
+    }
+  </script>
+</body>
+</html>
