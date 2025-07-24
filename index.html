@@ -1,1 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totem de Atendimento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for consistency and responsiveness */
+        body {
+            font-family: "Inter", sans-serif; /* Usando Inter como padrão */
+        }
+        .container {
+            @apply rounded-2xl shadow-lg;
+        }
+        button {
+            @apply rounded-xl transition-all duration-200 ease-in-out;
+        }
+        button:hover {
+            @apply scale-105;
+        }
+        button:active {
+            @apply scale-100;
+        }
 
+        /* Estilos para o modal de impressão (em tela) */
+        .print-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .print-modal-content {
+            background-color: white;
+            padding: 1.5rem; /* Padding ligeiramente menor para o modal */
+            border-radius: 0.75rem; /* Arredondamento um pouco menor */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra mais suave */
+            text-align: center;
+            max-width: 250px; /* Reduzindo o max-width do modal em tela */
+            width: 90%;
+            position: relative;
+            min-height: 150px; /* Um valor aproximado */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; /* Distribui o conteúdo verticalmente */
+            align-items: center;
+        }
+
+        /* ----- ESTILOS PARA IMPRESSÃO (FOCO NO 6x9cm e ESTILO MODERNO) ----- */
+        @media print {
+            body {
+                margin: 0 !important;
+                padding: 0 !important;
+                display: flex;
+                justify-content: center;
+                align-items: flex-start; /* Mantido flex-start para o modal ficar no topo */
+                min-height: 100vh;
+                background-color: transparent !important; /* Sem fundo cinza na impressão */
+            }
+
+            body > div:first-child { /* Esconde o conteúdo principal do totem */
+                display: none;
+            }
+
+            .print-modal-overlay {
+                position: static !important;
+                background-color: transparent !important;
+                width: auto !important; /* Deixa o conteúdo definir a largura */
+                height: auto !important; /* Deixa o conteúdo definir a altura */
+                display: block !important; /* Muda para block para controlar o tamanho fixo */
+                margin: 0;
+                padding: 0;
+            }
+
+            .print-modal-content {
+                /* Definir tamanho fixo para impressão (aproximadamente 6x9cm) */
+                width: 6cm !important; /* Largura desejada */
+                height: 9cm !important; /* Altura desejada */
+                
+                /* AJUSTE PARA SUBIR O CONTEÚDO:
+                   - padding-top controla o espaçamento interno do topo do "papel" de 6x9cm.
+                   - Experimente valores menores que 0.8cm (por exemplo, 0.4cm, 0.2cm, 0cm).
+                   - Você pode definir cada padding individualmente para controle máximo.
+                */
+                padding-top: 0.4cm !important;    /* Ajuste este valor para subir o "ATENDIMENTO" */
+                padding-right: 0.8cm !important;
+                padding-bottom: 0.8cm !important;
+                padding-left: 0.8cm !important;
+                /* OU use shorthand para todos os lados, por exemplo: */
+                /* padding: 0.4cm 0.8cm 0.8cm 0.8cm !important; */
+
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important; /* Manter sombra mais visível na impressão */
+                border-radius: 0.75rem !important; /* Manter arredondamento */
+                background-color: white !important; /* Garantir fundo branco */
+                display: flex; /* Mantém flex para centralizar conteúdo interno */
+                flex-direction: column;
+                justify-content: space-between; /* Distribui o conteúdo verticalmente */
+                align-items: center;
+
+                /* AJUSTE PARA SUBIR O CONTEÚDO GERAL (a ficha completa na página):
+                   - margin-top negativo subirá a ficha toda na página impressa.
+                   - Se o `padding-top` acima não for suficiente, use um `margin-top` negativo aqui.
+                   - Ex: margin-top: -1cm !important;
+                */
+                margin: 1cm auto !important; /* Centraliza horizontalmente e adiciona 1cm de margem superior padrão */
+            }
+
+            /* Esconde os botões "Imprimir" e "Fechar" na impressão */
+            .print-buttons {
+                display: none !important;
+            }
+
+            /* Estilos específicos para o conteúdo do ticket na impressão */
+            .ticket-container {
+                width: 100%; /* Ocupa a largura do modal */
+                text-align: center; /* Centraliza todo o texto */
+                font-family: "Inter", sans-serif;
+                color: black;
+                display: flex;
+                flex-direction: column;
+                justify-content: center; /* Centraliza o grupo de texto verticalmente */
+                flex-grow: 1; /* Permite que o container ocupe o espaço disponível */
+
+                /* Se o "ATENDIMENTO" ainda precisar subir MAIS DENTRO DA FICHA,
+                   mesmo após ajustar o padding do .print-modal-content,
+                   você pode adicionar um margin-top negativo aqui:
+                   margin-top: -0.5cm !important;
+                */
+            }
+
+            .ticket-header {
+                font-size: 14pt;
+                font-weight: bold;
+                margin-bottom: 10pt;
+            }
+
+            .ticket-datetime {
+                font-size: 8pt; /* Tamanho da fonte menor */
+                /* Ajuste de margens para a nova posição */
+                margin-top: 8pt; /* Mantém um espaçamento após a mensagem "Aguarde..." */
+                margin-bottom: 5pt; /* Espaço entre data/hora e o próximo elemento */
+                line-height: 1.1;
+                color: #555; /* Cor um pouco mais clara para a data/hora */
+            }
+
+            .ticket-label {
+                font-size: 9pt;
+                margin-bottom: 2pt;
+                line-height: 1.1;
+            }
+
+            .ticket-value {
+                font-size: 24pt;
+                font-weight: bold;
+                margin-bottom: 5pt;
+                line-height: 1.1;
+            }
+
+            .ticket-service-value {
+                font-size: 14pt !important;
+                font-weight: bold;
+                margin-bottom: 5pt;
+                line-height: 1.1;
+            }
+
+            .ticket-guiche-value {
+                font-size: 16pt;
+                font-weight: bold;
+                margin-top: 0;
+                margin-bottom: 10pt;
+            }
+
+            /* Aumenta a fonte para a mensagem "Aguarde ser chamado(a)" */
+            .ticket-wait-message {
+                font-size: 10pt !important; /* Aumentado de 8pt para 10pt. Ajuste se precisar */
+                font-weight: bold; /* Adicionado negrito para dar mais destaque */
+                /* Ajuste de margens para a nova posição */
+                margin-top: -5pt; /* Pode ser negativo para subir mais perto do cabeçalho */
+                margin-bottom: 5pt; /* Espaçamento entre a mensagem e a Ficha */
+                line-height: 1.1;
+            }
+            
+            /* Estilo para a linha de asteriscos */
+            .ticket-separator {
+                font-family: monospace; /* Garante que os asteriscos tenham largura uniforme */
+                font-size: 8pt; /* Tamanho da fonte dos asteriscos */
+                text-align: center; /* Centraliza os asteriscos */
+                margin-top: 18pt; /* Ajustado para aproximadamente 3 linhas abaixo da data/hora */
+                margin-bottom: 0; /* Remove margem abaixo */
+                line-height: 1; /* Linha de altura compacta */
+            }
+
+            /* Ajuste de margens da página inteira na impressão */
+            @page {
+                margin: 0; /* Zera todas as margens da página do navegador */
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 md:p-8">
+    <div class="bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md text-center">
+        <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Bem-vindo ao Atendimento</h1>
+        <p class="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg">Selecione o serviço desejado:</p>
+
+        <div class="grid grid-cols-1 gap-3 sm:gap-4 mb-6">
+            <button onclick="gerarFicha('Vendas de Peças')" class="bg-blue-600 text-white py-3 sm:py-4 rounded-xl hover:bg-blue-700 text-lg sm:text-xl font-semibold">Vendas de Peças</button>
+            <!-- BOTÃO 'CAIXA' REMOVIDO AQUI -->
+            <button onclick="gerarFicha('Preferencial')" class="bg-yellow-500 text-white py-3 sm:py-4 rounded-xl hover:bg-yellow-600 text-lg sm:text-xl font-semibold">Preferencial</button>
+            <button onclick="gerarFicha('Retirada de Pedido')" class="bg-purple-600 text-white py-3 sm:py-4 rounded-xl hover:bg-purple-700 text-lg sm:text-xl font-semibold">Retirada de Pedido</button>
+        </div>
+
+        <div id="mensagem" class="text-base sm:text-lg text-gray-700 mt-4 sm:mt-6 min-h-[2rem]"></div>
+    </div>
+
+    <div id="printModal" class="print-modal-overlay hidden">
+        <div class="print-modal-content">
+            <div id="printContent" class="ticket-container">
+            </div>
+            <div class="print-buttons">
+                <button onclick="fecharModal()" class="mt-4 bg-red-500 text-white py-2 px-3 rounded-md hover:bg-red-600 font-semibold text-sm">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // *** SUA URL DA API DO REPLIT ***
+        // Por favor, VERIFIQUE SE ESTA URL ESTÁ CORRETA e se seu projeto Replit está RODANDO.
+        // Você pode encontrar a URL no console do Replit quando seu projeto Python está ativo.
+        const API_BASE_URL = "https://945e81db-7b7e-4538-9480-530153b93654-00-dv9w0qyz7nyp.riker.replit.dev/";
+
+        async function gerarFicha(servicoTipo) {
+            const mensagemEl = document.getElementById("mensagem");
+            mensagemEl.className = 'text-sm sm:text-lg text-gray-700 mt-4 sm:mt-6';
+            mensagemEl.textContent = "Gerando ficha, aguarde...";
+
+            try {
+                const response = await fetch(`${API_BASE_URL}nova_senha`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ servico: servicoTipo })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    mensagemEl.className = 'text-green-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                    mensagemEl.innerHTML = `Ficha gerada: <strong>${data.ficha}</strong> para o Guichê <strong>${data.guiche}</strong>!`;
+                    console.log('Sucesso:', data);
+
+                    mostrarModalFicha(data.ficha, data.guiche, servicoTipo);
+
+                    setTimeout(() => {
+                        window.print();
+                    }, 50); // 50ms (pode ajustar, se necessário)
+
+                } else {
+                    mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                    mensagemEl.innerHTML = `Erro: ${data.error || data.message || 'Ocorreu um erro desconhecido.'}`;
+                    console.error('Erro na API:', data);
+                }
+
+            } catch (error) {
+                mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                mensagemEl.innerHTML = `Erro na requisição: ${error.message}. Verifique a conexão ou tente novamente.`;
+                console.error('Falha ao conectar à API:', error);
+            }
+        }
+
+        function mostrarModalFicha(ficha, guiche, servico) {
+            const printModal = document.getElementById('printModal');
+            const printContent = document.getElementById('printContent');
+
+            const now = new Date();
+            const formattedDate = now.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            const formattedTime = now.toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+
+            printContent.innerHTML = `
+                <div class="ticket-header">ATENDIMENTO</div>
+                <div class="ticket-wait-message">Aguarde ser chamado(a)</div>
+                <div class="ticket-label">Ficha:</div>
+                <div class="ticket-value">${ficha}</div>
+                <div class="ticket-guiche-value">GUICHE ${guiche}</div>
+                <div class="ticket-label">Serviço:</div>
+                <div class="ticket-service-value">${servico.toUpperCase()}</div>
+                <div class="ticket-datetime">${formattedDate} ${formattedTime}</div>
+                <div class="ticket-separator">********************</div>
+            `;
+
+            printModal.classList.remove('hidden');
+        }
+
+        function fecharModal() {
+            const printModal = document.getElementById('printModal');
+            printModal.classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
