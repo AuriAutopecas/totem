@@ -205,15 +205,17 @@
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 md:p-8">
-    <!-- O contêiner principal do totem foi ajustado aqui -->
-    <div class="bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl shadow-lg w-full max-w-4xl lg:max-w-[75vw] text-center">
+    <div class="bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl shadow-lg w-full max-w-2xl mx-auto text-center">
+        <!-- Logo adicionada aqui -->
+        <img src="logo.png" alt="Logo da empresa" width="328" height="145" class="mx-auto block mb-6">
+        
         <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-gray-800">Bem-vindo ao Atendimento</h1>
         <p class="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl">Selecione o serviço desejado:</p>
 
-        <div class="grid grid-cols-1 gap-3 sm:gap-4 mb-6">
-            <button onclick="gerarFicha('Vendas de Peças')" class="bg-blue-600 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-blue-700 text-lg sm:text-xl md:text-2xl font-semibold">Vendas de Peças</button>
-            <button onclick="gerarFicha('Preferencial')" class="bg-yellow-500 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-yellow-600 text-lg sm:text-xl md:text-2xl font-semibold">Preferencial</button>
-            <button onclick="gerarFicha('Retirada de Pedido')" class="bg-purple-600 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-purple-700 text-lg sm:text-xl md:text-2xl font-semibold">Retirada de Pedido</button>
+        <div class="grid grid-cols-1 gap-4 sm:gap-5 mb-6 max-w-lg mx-auto">
+            <button onclick="gerarFicha('Vendas de Peças')" class="bg-blue-600 text-white py-4 sm:py-5 md:py-6 rounded-xl hover:bg-blue-700 text-lg sm:text-xl md:text-2xl font-semibold">Vendas de Peças</button>
+            <button onclick="gerarFicha('Preferencial')" class="bg-yellow-500 text-white py-4 sm:py-5 md:py-6 rounded-xl hover:bg-yellow-600 text-lg sm:text-xl md:text-2xl font-semibold">Preferencial</button>
+            <button onclick="gerarFicha('Retirada de Pedido')" class="bg-purple-600 text-white py-4 sm:py-5 md:py-6 rounded-xl hover:bg-purple-700 text-lg sm:text-xl md:text-2xl font-semibold">Retirada de Pedido</button>
         </div>
 
         <div id="mensagem" class="text-base sm:text-lg lg:text-xl text-gray-700 mt-4 sm:mt-6 min-h-[2rem]"></div>
