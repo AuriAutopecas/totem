@@ -85,9 +85,9 @@
                 height: 9cm !important; /* Altura desejada */
                 
                 /* AJUSTE PARA SUBIR O CONTEÚDO:
-                   - padding-top controla o espaçamento interno do topo do "papel" de 6x9cm.
-                   - Experimente valores menores que 0.8cm (por exemplo, 0.4cm, 0.2cm, 0cm).
-                   - Você pode definir cada padding individualmente para controle máximo.
+                    - padding-top controla o espaçamento interno do topo do "papel" de 6x9cm.
+                    - Experimente valores menores que 0.8cm (por exemplo, 0.4cm, 0.2cm, 0cm).
+                    - Você pode definir cada padding individualmente para controle máximo.
                 */
                 padding-top: 0.4cm !important;    /* Ajuste este valor para subir o "ATENDIMENTO" */
                 padding-right: 0.8cm !important;
@@ -105,9 +105,9 @@
                 align-items: center;
 
                 /* AJUSTE PARA SUBIR O CONTEÚDO GERAL (a ficha completa na página):
-                   - margin-top negativo subirá a ficha toda na página impressa.
-                   - Se o `padding-top` acima não for suficiente, use um `margin-top` negativo aqui.
-                   - Ex: margin-top: -1cm !important;
+                    - margin-top negativo subirá a ficha toda na página impressa.
+                    - Se o `padding-top` acima não for suficiente, use um `margin-top` negativo aqui.
+                    - Ex: margin-top: -1cm !important;
                 */
                 margin: 1cm auto !important; /* Centraliza horizontalmente e adiciona 1cm de margem superior padrão */
             }
@@ -129,9 +129,9 @@
                 flex-grow: 1; /* Permite que o container ocupe o espaço disponível */
 
                 /* Se o "ATENDIMENTO" ainda precisar subir MAIS DENTRO DA FICHA,
-                   mesmo após ajustar o padding do .print-modal-content,
-                   você pode adicionar um margin-top negativo aqui:
-                   margin-top: -0.5cm !important;
+                    mesmo após ajustar o padding do .print-modal-content,
+                    você pode adicionar um margin-top negativo aqui:
+                    margin-top: -0.5cm !important;
                 */
             }
 
@@ -205,18 +205,18 @@
     </style>
 </head>
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 sm:p-6 md:p-8">
-    <div class="bg-white p-6 sm:p-8 md:p-10 rounded-2xl shadow-lg w-full max-w-sm sm:max-w-md text-center">
-        <h1 class="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6 text-gray-800">Bem-vindo ao Atendimento</h1>
-        <p class="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg">Selecione o serviço desejado:</p>
+    <!-- O contêiner principal do totem foi ajustado aqui -->
+    <div class="bg-white p-6 sm:p-8 md:p-10 lg:p-12 rounded-2xl shadow-lg w-full max-w-4xl lg:max-w-[75vw] text-center">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 text-gray-800">Bem-vindo ao Atendimento</h1>
+        <p class="text-gray-600 mb-6 sm:mb-8 text-base sm:text-lg lg:text-xl">Selecione o serviço desejado:</p>
 
         <div class="grid grid-cols-1 gap-3 sm:gap-4 mb-6">
-            <button onclick="gerarFicha('Vendas de Peças')" class="bg-blue-600 text-white py-3 sm:py-4 rounded-xl hover:bg-blue-700 text-lg sm:text-xl font-semibold">Vendas de Peças</button>
-            <!-- BOTÃO 'CAIXA' REMOVIDO AQUI -->
-            <button onclick="gerarFicha('Preferencial')" class="bg-yellow-500 text-white py-3 sm:py-4 rounded-xl hover:bg-yellow-600 text-lg sm:text-xl font-semibold">Preferencial</button>
-            <button onclick="gerarFicha('Retirada de Pedido')" class="bg-purple-600 text-white py-3 sm:py-4 rounded-xl hover:bg-purple-700 text-lg sm:text-xl font-semibold">Retirada de Pedido</button>
+            <button onclick="gerarFicha('Vendas de Peças')" class="bg-blue-600 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-blue-700 text-lg sm:text-xl md:text-2xl font-semibold">Vendas de Peças</button>
+            <button onclick="gerarFicha('Preferencial')" class="bg-yellow-500 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-yellow-600 text-lg sm:text-xl md:text-2xl font-semibold">Preferencial</button>
+            <button onclick="gerarFicha('Retirada de Pedido')" class="bg-purple-600 text-white py-3 sm:py-4 md:py-5 rounded-xl hover:bg-purple-700 text-lg sm:text-xl md:text-2xl font-semibold">Retirada de Pedido</button>
         </div>
 
-        <div id="mensagem" class="text-base sm:text-lg text-gray-700 mt-4 sm:mt-6 min-h-[2rem]"></div>
+        <div id="mensagem" class="text-base sm:text-lg lg:text-xl text-gray-700 mt-4 sm:mt-6 min-h-[2rem]"></div>
     </div>
 
     <div id="printModal" class="print-modal-overlay hidden">
@@ -237,7 +237,7 @@
 
         async function gerarFicha(servicoTipo) {
             const mensagemEl = document.getElementById("mensagem");
-            mensagemEl.className = 'text-sm sm:text-lg text-gray-700 mt-4 sm:mt-6';
+            mensagemEl.className = 'text-sm sm:text-lg lg:text-xl text-gray-700 mt-4 sm:mt-6';
             mensagemEl.textContent = "Gerando ficha, aguarde...";
 
             try {
@@ -247,12 +247,12 @@
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({ servico: servicoTipo })
+                    
                 });
-
                 const data = await response.json();
 
                 if (response.ok) {
-                    mensagemEl.className = 'text-green-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                    mensagemEl.className = 'text-green-600 font-semibold text-base sm:text-lg lg:text-xl mt-4 sm:mt-6';
                     mensagemEl.innerHTML = `Ficha gerada: <strong>${data.ficha}</strong> para o Guichê <strong>${data.guiche}</strong>!`;
                     console.log('Sucesso:', data);
 
@@ -263,13 +263,13 @@
                     }, 50); // 50ms (pode ajustar, se necessário)
 
                 } else {
-                    mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                    mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg lg:text-xl mt-4 sm:mt-6';
                     mensagemEl.innerHTML = `Erro: ${data.error || data.message || 'Ocorreu um erro desconhecido.'}`;
                     console.error('Erro na API:', data);
                 }
 
             } catch (error) {
-                mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg mt-4 sm:mt-6';
+                mensagemEl.className = 'text-red-600 font-semibold text-base sm:text-lg lg:text-xl mt-4 sm:mt-6';
                 mensagemEl.innerHTML = `Erro na requisição: ${error.message}. Verifique a conexão ou tente novamente.`;
                 console.error('Falha ao conectar à API:', error);
             }
